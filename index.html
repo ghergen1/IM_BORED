@@ -21,8 +21,9 @@
             <form id="activityForm">
                 <label for="topic">Enter Topic/Idea:</label>
                 <input type="text" id="topic" name="topic" required>
-                <button type="button" onclick="addTopic()">Add Topic</button>
-                <button type="button" onclick="clearForm()">Clear Form</button>
+                <button id="delete-button" type="button" onclick="clearForm()">Clear</button>
+                <button type="button" onclick="addTopic()" class="basic-button">Add Topic</button>
+                <button id="generate-button" type="button" onclick="getActivity()">Generate </button>
                 <ul id="topicList"></ul>
             </form>
         </div>
