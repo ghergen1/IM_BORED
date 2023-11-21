@@ -15,11 +15,23 @@
 
     <div class="container">
         <p>Looking for help with activity ideas? You've come to the right place!</p>
-        <a href="#cta" class="cta-button">Get Started</a>
+        <!-- <button id="getStartedBtn" class="cta-button">Get Started</button> -->
+
+        <div id="formContainer">
+            <form id="activityForm">
+                <label for="topic">Enter Topic/Idea:</label>
+                <input type="text" id="topic" name="topic" required>
+                <button type="button" onclick="addTopic()">Add Topic</button>
+                <button type="button" onclick="clearForm()">Clear Form</button>
+                <ul id="topicList"></ul>
+            </form>
+        </div>
     </div>
 
+    <br>
+
     <footer>
-        <p>&copy; 2023 &copy Grant Hergenroeder. All rights reserved.</p>
+        <p>&copy; 2023 Grant Hergenroeder. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
