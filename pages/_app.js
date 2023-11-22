@@ -7,7 +7,7 @@ export default function MyApp({ Component, pageProps }) {
       <Component {...pageProps} />
       <div className="footer">
         <p>
-          <Link href="/">Text</Link>
+          <Link href="/">Home</Link>
           <Link href="/art">About</Link>
         </p>
       </div>
