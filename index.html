@@ -23,7 +23,7 @@
                 <input type="text" id="topic" name="topic" required>
                 <button id="delete-button" type="button" onclick="clearForm()">Clear</button>
                 <button type="button" onclick="addTopic()" class="basic-button">Add Topic</button>
-                <button id="generate-button" type="button" onclick="getActivity()">Generate </button>
+                <button id="generate-button" type="button" onclick="generateText()">Generate </button>
                 <ul id="topicList"></ul>
             </form>
         </div>
@@ -34,7 +34,7 @@
     <footer>
         <p>&copy; 2023 Grant Hergenroeder. All rights reserved.</p>
     </footer>
-
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
