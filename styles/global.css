@@ -14,7 +14,7 @@ body {
 	height: 100vh;
 }
 
-label, h1, h2 {
+label, h1, h2, p {
   color: white;
 }
 
@@ -151,4 +151,9 @@ label, h1, h2 {
 .footer a {
   color: #ffffff;
   margin: 0 10px;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px; /* Adjust the gap as needed */
 }

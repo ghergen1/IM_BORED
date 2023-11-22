@@ -1,12 +1,14 @@
 import { useState } from "react";
 
 export default function MyPage() {
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     activity: "",
     date: "",
     location: "",
     people: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
 
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,15 +41,25 @@ export default function MyPage() {
     }));
   }
 
+  function handleClear() {
+    setFormData({
+      activity: "",
+      date: "",
+      location: "",
+      people: "",
+    });
+    setAnswer("");
+    window.location.reload();
+  }
+
   function generateCombinedPrompt() {
     const { activity, date, location, people } = formData;
 
-    // Modify this template as needed
     return `Please suggest 5 brief activity ideas for ${people} people, involving some or all of these ideas: ${activity} on ${date} at ${location}.`;
   }
 
   function generateGoogleSearchLink(query) {
-    // Use a regular expression to remove leading digits and whitespace
+    // Remove leading digits and whitespace
     const trimmedQuery = query.replace(/^\d+\.\s*/, '');
   
     const encodedQuery = encodeURIComponent(trimmedQuery);
@@ -68,6 +80,7 @@ export default function MyPage() {
           type="text"
           name="activity"
           onChange={handleChange}
+          required
         />
 
         <br />
@@ -79,7 +92,8 @@ export default function MyPage() {
           name="date"
           onChange={handleChange}
           min={new Date().toISOString().split("T")[0]}  // Set min attribute to today's date
-        />
+          required
+       />
 
         <br />
 
@@ -89,6 +103,7 @@ export default function MyPage() {
           type="text"
           name="location"
           onChange={handleChange}
+          required
         />
 
         <br />
@@ -99,20 +114,21 @@ export default function MyPage() {
           type="number"
           name="people"
           onChange={handleChange}
+          required
         />
 
         <br />
-
+        <div className="button-container">
+        <button type="button" onClick={handleClear} className="clear-button">Clear</button>
         <button className="prompt-button">Go!</button>
+        </div>
       </form>
 
       {isLoading && <div className="loading-spinner"></div>}
 
       <div className="answer-area">
-        {/* Display responses with Google search links */}
         {answer && (
         <div className="answer-area">
-          {/* Display responses with Google search links */}
           {answer.split("\n").map((response, index) => {
             const trimmedResponse = response.trim();
 
