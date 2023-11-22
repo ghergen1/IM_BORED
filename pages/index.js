@@ -46,6 +46,14 @@ export default function MyPage() {
     return `Please suggest 5 brief activity ideas for ${people} people, involving some or all of these ideas: ${activity} on ${date} at ${location}.`;
   }
 
+  function generateGoogleSearchLink(query) {
+    // Use a regular expression to remove leading digits and whitespace
+    const trimmedQuery = query.replace(/^\d+\.\s*/, '');
+  
+    const encodedQuery = encodeURIComponent(trimmedQuery);
+    return `https://www.google.com/search?q=${encodedQuery}`;
+  }
+
   return (
     <div className="container">
       <div className="gradient-background"></div>
@@ -70,6 +78,7 @@ export default function MyPage() {
           type="date"
           name="date"
           onChange={handleChange}
+          min={new Date().toISOString().split("T")[0]}  // Set min attribute to today's date
         />
 
         <br />
@@ -99,7 +108,32 @@ export default function MyPage() {
 
       {isLoading && <div className="loading-spinner"></div>}
 
-      <div className="answer-area">{answer}</div>
+      <div className="answer-area">
+        {/* Display responses with Google search links */}
+        {answer && (
+        <div className="answer-area">
+          {/* Display responses with Google search links */}
+          {answer.split("\n").map((response, index) => {
+            const trimmedResponse = response.trim();
+
+            // Only render if the response is not empty
+            if (trimmedResponse) {
+              const { activity, date, location, people } = formData;
+              return (
+                <div key={index}>
+                  <p>{trimmedResponse}</p>
+                  <a href={generateGoogleSearchLink(trimmedResponse + " " + location)} target="_blank" rel="noopener noreferrer">
+                    Google Search
+                  </a>
+                </div>
+              );
+            }
+
+            return null; // Skip rendering for empty responses
+          })}
+        </div>
+      )}
+      </div>
     </div>
   );
 }
