@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import TextCycler from "../components/cycler.js"
 
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
@@ -144,10 +145,15 @@ export default function MyPage() {
       <div className="gradient-background"></div>
       <h1>Welcome to IMBORED.TECH</h1>
       <h2>Get activity ideas using the power of AI!</h2>
-      <h2>Fill out the form below to get started: </h2>
       
+      <TextCycler></TextCycler>
+      <h2>Fill out the form below to get started: </h2>
+
       <form className="our-form" onSubmit={handleSubmit}>
-        <label className="prompt-label">Topics of interest?</label>
+        <div className="label-container">
+          <label className="prompt-label">Topics of interest?</label>
+          <span className="hint-text">(e.g. nature, music, coffee)</span>
+        </div>
         <input
           className="prompt-field"
           type="text"
@@ -157,7 +163,7 @@ export default function MyPage() {
           disabled={!buttonActive}
         />
 
-        {/* <br /> */}
+        <br />
 
         <label className="time-label">When?</label>
         <input
@@ -171,9 +177,13 @@ export default function MyPage() {
           disabled={!buttonActive}
        />
 
-        {/* <br /> */}
+        <br />
 
-        <label className="location-label">Where?</label>
+       
+        <div className="label-container">
+          <label className="location-label">Where?</label>
+          <span className="hint-text">(e.g. New York City, New York)</span>
+        </div>
         <input
           className="location-field"
           type="text"
@@ -183,8 +193,9 @@ export default function MyPage() {
           required
         />
 
-        {/* <br /> */}
+        <br />
 
+        
         <label className="people-label">How many people?</label>
         <input
           className="people-field"
@@ -197,7 +208,7 @@ export default function MyPage() {
           // required
         />
 
-        {/* <br /> */}
+        <br />
 
         <div className="button-container">
           <button type="button" disabled={!buttonActive} onClick={handleClear} className="clear-button">Clear</button>

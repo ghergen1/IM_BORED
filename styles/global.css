@@ -12,10 +12,30 @@ body {
 	background-size: 400% 400%;
 	animation: gradient 15s ease infinite;
 	height: 100vh;
+  margin-bottom: 2rem;
 }
 
 label, h1, h2, p {
   color: white;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding and border are included in the total width/height */
+}
+
+input:focus {
+  outline: none;
+  border-color: #0099ff; /* Change color when focused */
+}
+
+input:disabled {
+  background-color: #ccc;  /* Change background color for disabled input */
+  color: #666; /* Change text color for disabled input */
 }
 
 .answer-area {
@@ -29,6 +49,7 @@ label, h1, h2, p {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+  
 }
 
 .prompt-field {
@@ -52,6 +73,21 @@ label, h1, h2, p {
   background-color: #ccc; /* Change to the desired grey color */
   cursor: not-allowed;
   /* You can adjust other styles to make it visually distinct */
+}
+
+.prompt-label, .location-label, .people-label, .time-label {
+  margin-right: 10px; /* Adjust the spacing between label and hint text */
+}
+
+.hint-text {
+  font-size: 0.8rem;
+  opacity: 0.5; /* Adjust the opacity as needed */
+  color: white;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
 }
 
 @-webkit-keyframes rotate-forever {
@@ -152,6 +188,8 @@ label, h1, h2, p {
   margin: 0 auto;
   padding: 0 20px;
   text-align: center;
+  width: auto;
+  margin-bottom: 2rem;
 }
 
 .footer a {
@@ -175,5 +213,26 @@ label, h1, h2, p {
   .button-container {
     flex-direction: column;
     margin-top: 1rem;
+  }
+}
+
+#text-cycler {
+  text-align: left;
+  font-size: 0.6rem;
+  margin: 0;
+  /* white-space: nowrap; */
+}
+
+.text-fade-in-out {
+  animation: fadeInOut 5s infinite;
+  opacity: 0;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
   }
 }
