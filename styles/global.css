@@ -162,6 +162,7 @@ label, h1, h2, p {
 .button-container {
   display: flex;
   gap: 10px; /* Adjust the gap as needed */
+  margin-top: 1rem;
 }
 
 /* Mobile Styles */
