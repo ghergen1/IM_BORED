@@ -48,6 +48,12 @@ label, h1, h2, p {
   background-color: rgb(46, 98, 255);
 }
 
+.prompt-button:disabled {
+  background-color: #ccc; /* Change to the desired grey color */
+  cursor: not-allowed;
+  /* You can adjust other styles to make it visually distinct */
+}
+
 @-webkit-keyframes rotate-forever {
   0% {
     -webkit-transform: rotate(0deg);

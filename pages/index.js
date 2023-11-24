@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase.js';
 
 export default function MyPage() {
   const initialFormData = {
@@ -9,28 +13,59 @@ export default function MyPage() {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-
+  const [collaborationMode, setCollaborationMode] = useState(false);
+  const [groupId, setGroupId] = useState("");
+  const [uniqueKey, setUniqueKey] = useState("");
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [people, setPeople] = useState(0);
+  const [buttonActive, setButtonActive] = useState(true);
+  const [submitButtonActive, setSubmitButtonActive] = useState(true);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsLoading(true);
+    setButtonActive(false);
 
-    const combinedPrompt = generateCombinedPrompt();
-    
-    const response = await fetch("/api/get-answer", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt: combinedPrompt }),
-    });
+    if (collaborationMode) {
+      setIsLoading(true);
 
-    const data = await response.json();
-    setAnswer(data.text.trim());
-    setIsLoading(false);
+      const combinedPrompt = generateCombinedPrompt();
+      
+      const response = await fetch("/api/get-collab-answer", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData: formData, groupId: groupId, people: people, }),
+      });
+
+      const data = await response.json();
+      
+      setAnswer(data.text.trim());
+      setIsLoading(false);
+      setSubmitButtonActive(false);
+    } else {
+      console.log("Not in collaboration mode");
+      setIsLoading(true);
+
+      const combinedPrompt = generateCombinedPrompt();
+      
+      const response = await fetch("/api/get-answer", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: combinedPrompt }),
+      });
+
+      const data = await response.json();
+      
+      setAnswer(data.text.trim());
+      setIsLoading(false);
+  }
+  setButtonActive(true);
   }
 
   function handleChange(e) {
@@ -39,6 +74,7 @@ export default function MyPage() {
       ...prevData,
       [name]: value,
     }));
+    
   }
 
   function handleClear() {
@@ -49,7 +85,8 @@ export default function MyPage() {
       people: "",
     });
     setAnswer("");
-    window.location.reload();
+    setCollaborationMode(false);
+    // window.location.reload();
   }
 
   function generateCombinedPrompt() {
@@ -66,6 +103,37 @@ export default function MyPage() {
     return `https://www.google.com/search?q=${encodedQuery}`;
   }
 
+  const handleToggleCollaboration = () => {
+    setCollaborationMode(!collaborationMode);
+
+    const key = generateUniqueKey();
+    setGroupId(key); // Reset Group ID when enabling collaboration mode
+  };
+
+  const handleGenerateGroupID = () => {
+    setCollaborationMode(true);
+
+    const key = generateUniqueKey();
+    setGroupId(key); // Reset Group ID when enabling collaboration mode
+  };
+
+  const handlePeopleChange = (e) => {
+    setPeople(e.target.value);
+    handleChange(e);
+  };
+
+  function generateUniqueKey() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key = '';
+  
+    for (let i = 0; i < 6; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      key += characters.charAt(randomIndex);
+    }
+  
+    return key;
+  }
+
   return (
     <div className="container">
       <div className="gradient-background"></div>
@@ -74,35 +142,39 @@ export default function MyPage() {
       <h2>Fill out the form below to get started: </h2>
       
       <form className="our-form" onSubmit={handleSubmit}>
-        <label className="prompt-label">What do you want to do?</label>
+        <label className="prompt-label">Topics of interest?</label>
         <input
           className="prompt-field"
           type="text"
           name="activity"
           onChange={handleChange}
           required
+          disabled={!buttonActive}
         />
 
         <br />
 
-        <label className="time-label">When do you want to do it?</label>
+        <label className="time-label">When?</label>
         <input
           className="time-field"
           type="date"
           name="date"
           onChange={handleChange}
           min={new Date().toISOString().split("T")[0]}  // Set min attribute to today's date
+          value={new Date().toISOString().split("T")[0]} // Set value attribute to today's date
           required
+          disabled={!buttonActive}
        />
 
         <br />
 
-        <label className="location-label">Where do you want to do it?</label>
+        <label className="location-label">Where?</label>
         <input
           className="location-field"
           type="text"
           name="location"
           onChange={handleChange}
+          disabled={!buttonActive}
           required
         />
 
@@ -113,16 +185,59 @@ export default function MyPage() {
           className="people-field"
           type="number"
           name="people"
-          onChange={handleChange}
-          required
+          onChange={(e) => {
+            handlePeopleChange(e);
+          }}
+          disabled={!buttonActive}
+          // required
         />
 
         <br />
+
         <div className="button-container">
-        <button type="button" onClick={handleClear} className="clear-button">Clear</button>
-        <button className="prompt-button">Go!</button>
+          <button type="button" disabled={!buttonActive} onClick={handleClear} className="clear-button">Clear</button>
+          <button type="button" disabled={!buttonActive} onClick={handleToggleCollaboration} className="collaboration-toggle-button">
+              {collaborationMode ? "Disable Collaboration" : "Enable Collaboration"}
+          </button>
+          <button disabled={!buttonActive || !submitButtonActive} className="prompt-button">Go!</button>
         </div>
+
       </form>
+
+      {collaborationMode && (
+        <div>
+          {/* Your existing collaboration mode content */}
+          <p>Collaboration Mode is active!</p>
+          <button type="button" disabled={!buttonActive} onClick={handleGenerateGroupID}>Get New Group ID</button>
+          <p>Group ID: {groupId}</p>
+          {/* Generate and display a unique key */}
+          {/* <p>Unique Key: {groupId}</p> */}
+        </div>
+      )}
+
+      {collaborationMode && (
+        <div>
+          <label className="group-id-label">Enter Group ID: </label>
+          <input
+            className="group-id-field"
+            type="text"
+            name="group-id"
+            onChange={(e) => setGroupId(e.target.value)}
+            maxLength={6}
+            required
+            disabled={!buttonActive}
+          />
+        </div>
+      )}
+
+      {collaborationMode && !buttonActive && (
+        <div>
+          {/* Your existing collaboration mode content */}
+          <p>Waiting for other users to respond.</p>
+          <p>Please do not refresh the page.</p>
+        </div>
+      )}
+
 
       {isLoading && <div className="loading-spinner"></div>}
 
@@ -134,6 +249,7 @@ export default function MyPage() {
 
             // Only render if the response is not empty
             if (trimmedResponse) {
+              // setButtonActive(true);
               const { activity, date, location, people } = formData;
               return (
                 <div key={index}>

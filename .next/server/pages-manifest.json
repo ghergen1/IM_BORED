@@ -3,5 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/": "pages/index.js",
-  "/api/get-answer": "pages/api/get-answer.js"
+  "/about": "pages/about.js",
+  "/api/get-collab-answer": "pages/api/get-collab-answer.js"
 }
