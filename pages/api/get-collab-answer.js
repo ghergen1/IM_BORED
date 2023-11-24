@@ -88,13 +88,13 @@ if ( true
         const concatenatedActivity = allEntries.map(entry => entry.activity).join(', ');
 
         const collabPrompt = createCollaborativeResponse(concatenatedActivity, people, date, location);
-    // // Once all sub-entries are added, proceed to create the collaborative response using OpenAI API
-    const collaborativeResponse = await openai.createCompletion({
-        model: "text-davinci-003",
-        prompt: collabPrompt,
-        temperature: 0,
-        max_tokens: 1000
-      })
+        // Once all sub-entries are added, proceed to create the collaborative response using OpenAI API
+        const collaborativeResponse = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: collabPrompt,
+            temperature: 0,
+            max_tokens: 1000
+        })
 
     console.log('Collaborative response: ', collaborativeResponse.data.choices[0].text);
 

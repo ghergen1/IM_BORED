@@ -4,6 +4,8 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, setDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase.js';
 
+const topics = ['Sports', 'Technology', 'Travel', 'Food', 'Music'];
+
 export default function MyPage() {
   const initialFormData = {
     activity: "",
@@ -21,6 +23,22 @@ export default function MyPage() {
   const [people, setPeople] = useState(0);
   const [buttonActive, setButtonActive] = useState(true);
   const [submitButtonActive, setSubmitButtonActive] = useState(true);
+  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [topicButtonActive, setTopicButtonActive] = useState(true);
+
+  const handleTopicClick = (topic) => {
+    const updatedTopics = [...selectedTopics];
+
+    if (updatedTopics.includes(topic)) {
+      // If the topic is already selected, remove it
+      updatedTopics.splice(updatedTopics.indexOf(topic), 1);
+    } else {
+      // If the topic is not selected, add it
+      updatedTopics.push(topic);
+    }
+
+    setSelectedTopics(updatedTopics);
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,8 +46,6 @@ export default function MyPage() {
 
     if (collaborationMode) {
       setIsLoading(true);
-
-      const combinedPrompt = generateCombinedPrompt();
       
       const response = await fetch("/api/get-collab-answer", {
         method: "POST",
@@ -97,9 +113,10 @@ export default function MyPage() {
   }
 
   function generateCombinedPrompt() {
-    const { activity, date, location, people } = formData;
-
-    return `Please suggest 5 brief activity ideas for ${people} people, involving some or all of these ideas: ${activity} on ${date} at ${location}.`;
+    const { date, location, people } = formData;
+    const combinedTopics = selectedTopics.join(', ');
+    console.log('Combined topics: ', combinedTopics);
+    return `Please suggest 5 brief activity ideas for ${people} people, involving some or all of these ideas: ${combinedTopics} on ${date} at ${location}.`;
   }
 
   function generateGoogleSearchLink(query) {
@@ -150,14 +167,33 @@ export default function MyPage() {
       
       <form className="our-form" onSubmit={handleSubmit}>
         <label className="prompt-label">Topics of interest?</label>
-        <input
+        {/* <input
           className="prompt-field"
           type="text"
           name="activity"
           onChange={handleChange}
           required
           disabled={!buttonActive}
-        />
+        /> */}
+      <div className="topic-buttons">
+        {topics.map((topic) => (
+          <button
+            key={topic}
+            className={`topic-button ${selectedTopics.includes(topic) ? 'selected' : ''}`}
+            onClick={() => handleTopicClick(topic)}
+            disabled={!topicButtonActive}
+          >
+            {topic}
+          </button>
+        ))}
+      </div>
+      <input
+        className="prompt-field"
+        type="text"
+        name="activity"
+        value={selectedTopics.join(', ')} // Display selected topics as a comma-separated string
+        readOnly
+      />
 
         <br />
 
@@ -204,7 +240,7 @@ export default function MyPage() {
         <div className="button-container">
           <button type="button" disabled={!buttonActive} onClick={handleClear} className="clear-button">Clear</button>
           <button type="button" disabled={!buttonActive} onClick={handleToggleCollaboration} className="collaboration-toggle-button">
-              {collaborationMode ? "Disable Collaboration" : "Enable Collaboration"}
+              {collaborationMode ? "Disable Collaborative Session" : "Enable Collaborative Session"}
           </button>
           <button disabled={!buttonActive || !submitButtonActive} className="prompt-button">Go!</button>
         </div>
