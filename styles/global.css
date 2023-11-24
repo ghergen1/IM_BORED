@@ -163,3 +163,16 @@ label, h1, h2, p {
   display: flex;
   gap: 10px; /* Adjust the gap as needed */
 }
+
+/* Mobile Styles */
+@media only screen and (max-width: 600px) {
+  .prompt-field {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  
+  .button-container {
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+}

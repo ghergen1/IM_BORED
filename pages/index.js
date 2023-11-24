@@ -157,7 +157,7 @@ export default function MyPage() {
           disabled={!buttonActive}
         />
 
-        <br />
+        {/* <br /> */}
 
         <label className="time-label">When?</label>
         <input
@@ -171,7 +171,7 @@ export default function MyPage() {
           disabled={!buttonActive}
        />
 
-        <br />
+        {/* <br /> */}
 
         <label className="location-label">Where?</label>
         <input
@@ -183,7 +183,7 @@ export default function MyPage() {
           required
         />
 
-        <br />
+        {/* <br /> */}
 
         <label className="people-label">How many people?</label>
         <input
@@ -197,7 +197,7 @@ export default function MyPage() {
           // required
         />
 
-        <br />
+        {/* <br /> */}
 
         <div className="button-container">
           <button type="button" disabled={!buttonActive} onClick={handleClear} className="clear-button">Clear</button>
