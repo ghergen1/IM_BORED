@@ -42,9 +42,16 @@ export default function MyPage() {
 
       const data = await response.json();
       
-      setAnswer(data.text.trim());
-      setIsLoading(false);
-      setSubmitButtonActive(false);
+      try {
+          setAnswer(data.text.trim());
+          setIsLoading(false);
+          setSubmitButtonActive(false);
+      } catch (e) {
+          console.error('Error awaiting response: ', e);
+          
+          return;
+      }
+
     } else {
       console.log("Not in collaboration mode");
       setIsLoading(true);
